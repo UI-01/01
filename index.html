@@ -6,23 +6,19 @@
     <title>Xen0UI Engine — Library Bootload</title>
     <style>
         :root {
-            /* Authentic Silver Surfer Liquid Chrome Metallic Sheen */
-            --bg-metallic: linear-gradient(
-                135deg, 
-                #f2f4f7 0%, 
-                #e2e7ec 25%, 
-                #9fb1c4 45%, 
-                #ffffff 55%, 
-                #cbd5e1 70%, 
-                #f1f5f9 100%
-            );
-            --panel-white: rgba(255, 255, 255, 0.9);
+            /* High-performance polished chrome & platinum silver surface layout */
+            --bg-metallic: #e2e8f0;
+            --silver-sheen: linear-gradient(135deg, #ffffff 0%, #cbd5e1 50%, #94a3b8 100%);
+            --panel-white: #ffffff;
             --text-dark: #111111;
             --text-muted: #4b5563;
-            --border-light: rgba(0, 0, 0, 0.08);
+            --border-light: rgba(0, 0, 0, 0.06);
             --code-bg: #f8f9fa;
-            --accent-silver: #94a3b8;
             --accent-dark: #000000;
+        }
+
+        html {
+            scroll-behavior: smooth;
         }
 
         * {
@@ -33,29 +29,21 @@
         }
 
         body {
-            background: var(--bg-metallic);
-            background-size: 400% 400%;
-            animation: silverSurferFlow 25deg infinite alternate ease-in-out;
+            background-color: var(--bg-metallic);
+            /* Static silver surface profile completely eliminates render lag loops */
+            background-image: var(--silver-sheen);
             background-attachment: fixed;
             color: var(--text-dark);
             display: flex;
             min-height: 100vh;
         }
 
-        /* Ambient liquid metallic movement animation */
-        @keyframes silverSurferFlow {
-            0% { background-position: 0% 50%; }
-            100% { background-position: 100% 50%; }
-        }
-
-        /* Sidebar Glassmorphism Layer */
+        /* Sidebar Panel (Optimized: Removed backdrop filters causing redraw lag) */
         .sidebar {
             width: 280px;
-            background: rgba(255, 255, 255, 0.65);
-            backdrop-filter: blur(20px) saturate(160%);
-            -webkit-backdrop-filter: blur(20px) saturate(160%);
-            border-right: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.03);
+            background: #f8fafc;
+            border-right: 1px solid var(--border-light);
+            box-shadow: 2px 0 15px rgba(0, 0, 0, 0.02);
             position: fixed;
             top: 0;
             bottom: 0;
@@ -91,15 +79,13 @@
             padding: 0.6rem 0.8rem;
             border-radius: 6px;
             display: block;
-            transition: all 0.2s ease;
+            transition: background 0.15s ease, color 0.15s ease;
         }
 
         .nav-links a:hover, .nav-links a.active {
             color: var(--text-dark);
-            background: rgba(255, 255, 255, 0.6);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            background: rgba(0, 0, 0, 0.04);
             font-weight: 600;
-            transform: translateX(3px);
         }
 
         /* Main Container Layout */
@@ -108,11 +94,12 @@
             flex: 1;
             padding: 3rem 4rem;
             max-width: 1100px;
+            padding-bottom: 50vh; 
         }
 
         header {
             margin-bottom: 4rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            border-bottom: 1px solid var(--border-light);
             padding-bottom: 2rem;
         }
 
@@ -128,22 +115,18 @@
             font-size: 1.1rem;
         }
 
-        /* Documentation Block Containers */
+        /* Documentation Block Containers (Hardware Accelerated CSS) */
         .doc-section {
             background: var(--panel-white);
-            backdrop-filter: blur(10px);
             border-radius: 12px;
             padding: 2.5rem;
             margin-bottom: 3rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
-            border: 1px solid rgba(255, 255, 255, 0.8);
-            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
-            scroll-margin-top: 40px;
-        }
-
-        .doc-section:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 35px rgba(148, 163, 184, 0.15);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.7);
+            /* Enforces GPU layering to ensure stutter-free scrolling animations */
+            will-change: transform;
+            transform: translateZ(0);
+            scroll-margin-top: 50px;
         }
 
         .doc-section h3 {
@@ -160,7 +143,7 @@
             margin-bottom: 1.5rem;
         }
 
-        /* Component Property Specification Tables */
+        /* Component Tables */
         .param-table {
             width: 100%;
             border-collapse: collapse;
@@ -171,11 +154,11 @@
         .param-table th, .param-table td {
             text-align: left;
             padding: 0.75rem 1rem;
-            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            border-bottom: 1px solid var(--border-light);
         }
 
         .param-table th {
-            background: rgba(255, 255, 255, 0.5);
+            background: #f8fafc;
             font-weight: 600;
             color: var(--text-dark);
         }
@@ -188,12 +171,12 @@
             font-size: 0.85rem;
         }
 
-        /* Source Code Layout Arrays */
+        /* Code Block Container styling */
         .code-container {
             position: relative;
             background: var(--code-bg);
             border-radius: 8px;
-            border: 1px solid rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-light);
             overflow: hidden;
         }
 
@@ -222,63 +205,55 @@
             font-weight: 600;
             border-radius: 4px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .copy-btn:hover {
-            background: var(--text-dark);
+            background: var(--accent-dark);
             color: #ffffff;
-            border-color: var(--text-dark);
         }
 
-        /* Responsive Breakpoints Layout */
         @media (max-width: 768px) {
-            body {
-                flex-direction: column;
-            }
+            body { flex-direction: column; }
             .sidebar {
                 width: 100%;
                 position: relative;
                 border-right: none;
-                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                border-bottom: 1px solid var(--border-light);
                 padding: 1.5rem;
             }
-            .main-content {
-                margin-left: 0;
-                padding: 2rem 1.5rem;
-            }
+            .main-content { margin-left: 0; padding: 2rem 1.5rem; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Sidebar Glass Menu Navigation Layout -->
+    <!-- Sidebar Menu Navigation -->
     <nav class="sidebar">
         <div class="logo-area">
             <h1>Xen0UI Engine</h1>
         </div>
         <ul class="nav-links">
             <li><a href="#bootloading" class="active" data-title="Library Bootload">Library Bootload</a></li>
-            <li><a href="#window" data-title="Instantiating a Window Instance">Create Window</a></li>
-            <li><a href="#tab" data-title="Creating Interface Tabs">Create Tab</a></li>
-            <li><a href="#button" data-title="Button Elements">Create Button</a></li>
-            <li><a href="#toggle" data-title="Toggle Switches">Create Toggle</a></li>
-            <li><a href="#slider" data-title="Sliders">Create Slider</a></li>
-            <li><a href="#input" data-title="Input Fields">Create Input</a></li>
-            <li><a href="#dropdown" data-title="Dropdown Panels">Create Dropdown</a></li>
-            <li><a href="#keybind" data-title="Keybind Components">Create Keybind</a></li>
+            <li><a href="#window" data-title="Instantiating a Window Instance">CreateWindow</a></li>
+            <li><a href="#tab" data-title="Creating Interface Tabs">CreateTab</a></li>
+            <li><a href="#button" data-title="Button Elements">CreateButton</a></li>
+            <li><a href="#toggle" data-title="Toggle Switches">CreateToggle</a></li>
+            <li><a href="#slider" data-title="Sliders">CreateSlider</a></li>
+            <li><a href="#input" data-title="Input Fields">CreateInput</a></li>
+            <li><a href="#dropdown" data-title="Dropdown Panels">CreateDropdown</a></li>
+            <li><a href="#keybind" data-title="Keybind Components">CreateKeybind</a></li>
         </ul>
     </nav>
 
-    <!-- Main Content Presentation Layout Frame -->
+    <!-- Main Presentation Stream Frame -->
     <main class="main-content">
         <header>
-            <h2>Xen0UI Documentation</h2>
+            <h2>Xen0UI Engine Documentation</h2>
             <p>A springy, highly-animated user interface system built for adaptive Light and Dark custom execution layouts.</p>
         </header>
 
-        <!-- Section: Bootloading -->
+        <!-- PAGE: Bootloading -->
         <section id="bootloading" class="doc-section">
             <h3>1. Library Bootloading Initialization</h3>
             <p>Load the universal workspace layout library from memory via an environment loadstring block before instantiating custom components.</p>
@@ -288,9 +263,9 @@
             </div>
         </section>
 
-        <!-- Section: CreateWindow -->
+        <!-- PAGE: CreateWindow -->
         <section id="window" class="doc-section">
-            <h3>2. Instantiating a Window Instance</h3>
+            <h3>2. Instantiating a Window Instance (CreateWindow)</h3>
             <p>Generates the main graphic window frame after launching the <code>Xen0 UI</code> fluid splash screen zoom layout sequence.</p>
             <table class="param-table">
                 <thead>
@@ -303,3 +278,18 @@
                 </thead>
                 <tbody>
                     <tr>
+                        <td><code>Name</code></td>
+                        <td>string</td>
+                        <td>"Xen0 UI Engine"</td>
+                        <td>The core visual text title rendered on top of the structural hub.</td>
+                    </tr>
+                    <tr>
+                        <td><code>Theme</code></td>
+                        <td>string</td>
+                        <td>"Light"</td>
+                        <td>Switches visual arrays. Accepts <code>"Light"</code> or <code>"Dark"</code> color styles.</td>
+                    </tr>
+                    <tr>
+                        <td><code>LoadingTitle</code></td>
+                        <td>string</td>
+                        <td>"Xen0 UI"</td>

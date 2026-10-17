@@ -30,7 +30,6 @@
 
         body {
             background-color: var(--bg-metallic);
-            /* Static silver surface profile completely eliminates render lag loops */
             background-image: var(--silver-sheen);
             background-attachment: fixed;
             color: var(--text-dark);
@@ -38,7 +37,7 @@
             min-height: 100vh;
         }
 
-        /* Sidebar Panel (Optimized: Removed backdrop filters causing redraw lag) */
+        /* Sidebar Panel Menu */
         .sidebar {
             width: 280px;
             background: #f8fafc;
@@ -115,7 +114,7 @@
             font-size: 1.1rem;
         }
 
-        /* Documentation Block Containers (Hardware Accelerated CSS) */
+        /* Documentation Block Containers */
         .doc-section {
             background: var(--panel-white);
             border-radius: 12px;
@@ -123,7 +122,6 @@
             margin-bottom: 3rem;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
             border: 1px solid rgba(255, 255, 255, 0.7);
-            /* Enforces GPU layering to ensure stutter-free scrolling animations */
             will-change: transform;
             transform: translateZ(0);
             scroll-margin-top: 50px;
@@ -171,7 +169,7 @@
             font-size: 0.85rem;
         }
 
-        /* Code Block Container styling */
+        /* Code Block Box Layout */
         .code-container {
             position: relative;
             background: var(--code-bg);
@@ -246,7 +244,7 @@
         </ul>
     </nav>
 
-    <!-- Main Presentation Stream Frame -->
+    <!-- Main Content Presentation Layout Frame -->
     <main class="main-content">
         <header>
             <h2>Xen0UI Engine Documentation</h2>
@@ -293,3 +291,7 @@
                         <td><code>LoadingTitle</code></td>
                         <td>string</td>
                         <td>"Xen0 UI"</td>
+                        <td>The bold primary headline animated onto the initial splash block.</td>
+                    </tr>
+                    <tr>
+                        <td><code>LoadingSubtitle</code></td>

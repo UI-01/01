@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xen0UI Engine — Library Bootload</title>
+    <style>
+        :root {
+            /* Authentic Silver Surfer Liquid Chrome Metallic Sheen */
+            --bg-metallic: linear-gradient(
+                135deg, 
+                #f2f4f7 0%, 
+                #e2e7ec 25%, 
+                #9fb1c4 45%, 
+                #ffffff 55%, 
+                #cbd5e1 70%, 
+                #f1f5f9 100%
+            );
+            --panel-white: rgba(255, 255, 255, 0.9);
+            --text-dark: #111111;
+            --text-muted: #4b5563;
+            --border-light: rgba(0, 0, 0, 0.08);
+            --code-bg: #f8f9fa;
+            --accent-silver: #94a3b8;
+            --accent-dark: #000000;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background: var(--bg-metallic);
+            background-size: 400% 400%;
+            animation: silverSurferFlow 25deg infinite alternate ease-in-out;
+            background-attachment: fixed;
+            color: var(--text-dark);
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Ambient liquid metallic movement animation */
+        @keyframes silverSurferFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 100% 50%; }
+        }
+
+        /* Sidebar Glassmorphism Layer */
+        .sidebar {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(20px) saturate(160%);
+            -webkit-backdrop-filter: blur(20px) saturate(160%);
+            border-right: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 4px 0 30px rgba(0, 0, 0, 0.03);
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            padding: 2rem 1.5rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            z-index: 100;
+        }
+
+        .logo-area h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-transform: uppercase;
+            border-left: 4px solid var(--accent-dark);
+            padding-left: 10px;
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 0.95rem;
+            font-weight: 500;
+            padding: 0.6rem 0.8rem;
+            border-radius: 6px;
+            display: block;
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover, .nav-links a.active {
+            color: var(--text-dark);
+            background: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            font-weight: 600;
+            transform: translateX(3px);
+        }
+
+        /* Main Container Layout */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 3rem 4rem;
+            max-width: 1100px;
+        }
+
+        header {
+            margin-bottom: 4rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+            padding-bottom: 2rem;
+        }
+
+        header h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 0.5rem;
+        }
+
+        header p {
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        /* Documentation Block Containers */
+        .doc-section {
+            background: var(--panel-white);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            padding: 2.5rem;
+            margin-bottom: 3rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.8);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+            scroll-margin-top: 40px;
+        }
+
+        .doc-section:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(148, 163, 184, 0.15);
+        }
+
+        .doc-section h3 {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            letter-spacing: -0.3px;
+        }
+
+        .doc-section p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        /* Component Property Specification Tables */
+        .param-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .param-table th, .param-table td {
+            text-align: left;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .param-table th {
+            background: rgba(255, 255, 255, 0.5);
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .param-table td code {
+            background: rgba(0,0,0,0.04);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-family: "Courier New", Courier, monospace;
+            font-size: 0.85rem;
+        }
+
+        /* Source Code Layout Arrays */
+        .code-container {
+            position: relative;
+            background: var(--code-bg);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+        }
+
+        pre {
+            padding: 1.2rem;
+            overflow-x: auto;
+            margin: 0;
+        }
+
+        code {
+            font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, Courier, monospace;
+            font-size: 0.9rem;
+            color: #222222;
+            line-height: 1.5;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #ffffff;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+            color: var(--text-dark);
+            padding: 0.4rem 0.8rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.02);
+        }
+
+        .copy-btn:hover {
+            background: var(--text-dark);
+            color: #ffffff;
+            border-color: var(--text-dark);
+        }
+
+        /* Responsive Breakpoints Layout */
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+                position: relative;
+                border-right: none;
+                border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+                padding: 1.5rem;
+            }
+            .main-content {
+                margin-left: 0;
+                padding: 2rem 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Sidebar Glass Menu Navigation Layout -->
+    <nav class="sidebar">
+        <div class="logo-area">
+            <h1>Xen0UI Engine</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a href="#bootloading" class="active" data-title="Library Bootload">Library Bootload</a></li>
+            <li><a href="#window" data-title="Instantiating a Window Instance">Create Window</a></li>
+            <li><a href="#tab" data-title="Creating Interface Tabs">Create Tab</a></li>
+            <li><a href="#button" data-title="Button Elements">Create Button</a></li>
+            <li><a href="#toggle" data-title="Toggle Switches">Create Toggle</a></li>
+            <li><a href="#slider" data-title="Sliders">Create Slider</a></li>
+            <li><a href="#input" data-title="Input Fields">Create Input</a></li>
+            <li><a href="#dropdown" data-title="Dropdown Panels">Create Dropdown</a></li>
+            <li><a href="#keybind" data-title="Keybind Components">Create Keybind</a></li>
+        </ul>
+    </nav>
+
+    <!-- Main Content Presentation Layout Frame -->
+    <main class="main-content">
+        <header>
+            <h2>Xen0UI Documentation</h2>
+            <p>A springy, highly-animated user interface system built for adaptive Light and Dark custom execution layouts.</p>
+        </header>
+
+        <!-- Section: Bootloading -->
+        <section id="bootloading" class="doc-section">
+            <h3>1. Library Bootloading Initialization</h3>
+            <p>Load the universal workspace layout library from memory via an environment loadstring block before instantiating custom components.</p>
+            <div class="code-container">
+                <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                <pre><code>local Xen0UI = loadstring(game:HttpGet("https://githubusercontent.com"))()</code></pre>
+            </div>
+        </section>
+
+        <!-- Section: CreateWindow -->
+        <section id="window" class="doc-section">
+            <h3>2. Instantiating a Window Instance</h3>
+            <p>Generates the main graphic window frame after launching the <code>Xen0 UI</code> fluid splash screen zoom layout sequence.</p>
+            <table class="param-table">
+                <thead>
+                    <tr>
+                        <th>Parameter</th>
+                        <th>Type</th>
+                        <th>Default</th>
+                        <th>Description</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>

@@ -1,4 +1,4 @@
--- Xen0UI: Zoom Edition (Smooth Scaling & Floating Keybind Minimize Button)
+-- Xen0UI: Dual Theme Elastic Edition (Light/Dark Engine)
 local Xen0UI = {}
 
 local TweenService = game:GetService("TweenService")
@@ -16,9 +16,30 @@ function Xen0UI:CreateWindow(Config)
     local LoadingTitle = Config.LoadingTitle or "Xen0 UI"
     local LoadingSubtitle = Config.LoadingSubtitle or "by Developer"
     
-    -- Minimize state controllers
+    -- Theme Detection Engine
+    local selectedTheme = Config.Theme or "Light"
+    local isDark = (selectedTheme == "Dark")
+
+    -- Theme Color Mapping Tables
+    local Theme = {
+        MainBg       = isDark and Color3.fromRGB(20, 20, 20)    or Color3.fromRGB(255, 255, 255),
+        ElementBg    = isDark and Color3.fromRGB(28, 28, 28)    or Color3.fromRGB(248, 248, 248),
+        TextPrimary  = isDark and Color3.fromRGB(240, 240, 240) or Color3.fromRGB(0, 0, 0),
+        TextSecondary= isDark and Color3.fromRGB(150, 150, 150) or Color3.fromRGB(120, 120, 120),
+        TextLabel    = isDark and Color3.fromRGB(200, 200, 200) or Color3.fromRGB(40, 40, 40),
+        Border       = isDark and Color3.fromRGB(38, 38, 38)    or Color3.fromRGB(225, 225, 225),
+        Line         = isDark and Color3.fromRGB(32, 32, 32)    or Color3.fromRGB(240, 240, 240),
+        TabActive    = isDark and Color3.fromRGB(32, 32, 32)    or Color3.fromRGB(242, 242, 242),
+        TabInactive  = isDark and Color3.fromRGB(20, 20, 20)    or Color3.fromRGB(255, 255, 255),
+        ToggleTrack  = isDark and Color3.fromRGB(45, 45, 45)    or Color3.fromRGB(220, 220, 220),
+        ToggleActive = isDark and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(0, 0, 0),
+        ToggleBall   = isDark and Color3.fromRGB(20, 20, 20)    or Color3.fromRGB(255, 255, 255),
+        InputBox     = isDark and Color3.fromRGB(25, 25, 25)    or Color3.fromRGB(255, 255, 255),
+    }
+
+    -- Minimize controllers
     local uiVisible = true
-    local minimizeKey = Enum.KeyCode.K -- Default is K
+    local minimizeKey = Enum.KeyCode.K
     local bindingMinimize = false
 
     local ScreenGui = Instance.new("ScreenGui")
@@ -32,14 +53,14 @@ function Xen0UI:CreateWindow(Config)
     local SplashFrame = Instance.new("Frame")
     SplashFrame.Size = UDim2.new(0, 320, 0, 160)
     SplashFrame.Position = UDim2.new(0.5, -160, 0.5, -80)
-    SplashFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    SplashFrame.BackgroundColor3 = Theme.MainBg
     SplashFrame.BackgroundTransparency = 1
     SplashFrame.ClipsDescendants = true
     SplashFrame.Parent = ScreenGui
 
     Instance.new("UICorner", SplashFrame).CornerRadius = UDim.new(0, 16)
     local SplashStroke = Instance.new("UIStroke", SplashFrame)
-    SplashStroke.Color = Color3.fromRGB(230, 230, 230)
+    SplashStroke.Color = Theme.Border
     SplashStroke.Thickness = 2
 
     local SplashText = Instance.new("TextLabel", SplashFrame)
@@ -47,7 +68,7 @@ function Xen0UI:CreateWindow(Config)
     SplashText.Position = UDim2.new(0, 0, 0.3, -20)
     SplashText.BackgroundTransparency = 1
     SplashText.Text = LoadingTitle
-    SplashText.TextColor3 = Color3.fromRGB(0, 0, 0)
+    SplashText.TextColor3 = Theme.TextPrimary
     SplashText.Font = Enum.Font.FredokaOne
     SplashText.TextSize = 35
     SplashText.TextTransparency = 1
@@ -57,12 +78,11 @@ function Xen0UI:CreateWindow(Config)
     SubText.Position = UDim2.new(0, 0, 0.6, 0)
     SubText.BackgroundTransparency = 1
     SubText.Text = LoadingSubtitle
-    SubText.TextColor3 = Color3.fromRGB(120, 120, 120)
+    SubText.TextColor3 = Theme.TextSecondary
     SubText.Font = Enum.Font.SourceSansItalic
     SubText.TextSize = 16
     SubText.TextTransparency = 1
 
-    -- Play Intro Sequence
     fluidTween(SplashFrame, 0.6, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, {BackgroundTransparency = 0})
     fluidTween(SplashText, 0.7, Enum.EasingStyle.Back, Enum.EasingDirection.Out, {TextTransparency = 0, TextSize = 42})
     local subIn = fluidTween(SubText, 0.7, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, {TextTransparency = 0})
@@ -76,13 +96,13 @@ function Xen0UI:CreateWindow(Config)
     SplashFrame:Destroy()
 
     -- ==========================================
-    -- 2. MAIN HUB INTERFACE WITH ZOOM MOCKUPS
+    -- 2. MAIN HUB INTERFACE
     -- ==========================================
     local MainFrame = Instance.new("Frame")
     MainFrame.Name = "MainFrame"
     MainFrame.Size = UDim2.new(0, 520, 0, 360)
     MainFrame.Position = UDim2.new(0.5, -260, 0.5, -180)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    MainFrame.BackgroundColor3 = Theme.MainBg
     MainFrame.ClipsDescendants = true
     MainFrame.Active = true
     MainFrame.Draggable = true
@@ -90,49 +110,44 @@ function Xen0UI:CreateWindow(Config)
 
     Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 12)
     local MainStroke = Instance.new("UIStroke", MainFrame)
-    MainStroke.Color = Color3.fromRGB(225, 225, 225)
+    MainStroke.Color = Theme.Border
 
-    -- Pop-in Scale Zoom Entrance
     MainFrame.Size = UDim2.new(0, 10, 0, 10)
     MainFrame.Position = UDim2.new(0.5, -5, 0.5, -5)
     MainFrame.BackgroundTransparency = 1
     fluidTween(MainFrame, 0.6, Enum.EasingStyle.Back, Enum.EasingDirection.Out, {Size = UDim2.new(0, 520, 0, 360), Position = UDim2.new(0.5, -260, 0.5, -180), BackgroundTransparency = 0})
 
-    -- FLOATING OPEN BUTTON (When minimized)
     local OpenBtn = Instance.new("TextButton")
     OpenBtn.Name = "OpenButton"
-    OpenBtn.Size = UDim2.new(0, 120, 0, 30)
-    OpenBtn.Position = UDim2.new(0.5, -60, 0, -40) -- Hidden at start above screen
-    OpenBtn.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+    OpenBtn.Size = UDim2.new(0, 130, 0, 32)
+    OpenBtn.Position = UDim2.new(0.5, -65, 0, -40)
+    OpenBtn.BackgroundColor3 = Theme.MainBg
     OpenBtn.Text = "Xen0 UI - Open"
-    OpenBtn.TextColor3 = Color3.fromRGB(0, 0, 0)
+    OpenBtn.TextColor3 = Theme.TextPrimary
     OpenBtn.Font = Enum.Font.SourceSansBold
     OpenBtn.TextSize = 14
     OpenBtn.Parent = ScreenGui
 
     Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(0, 6)
     local oStroke = Instance.new("UIStroke", OpenBtn)
-    oStroke.Color = Color3.fromRGB(220, 220, 220)
+    oStroke.Color = Theme.Border
 
     local function toggleUI()
         uiVisible = not uiVisible
         if uiVisible then
-            -- Zoom interface back out from the top button position
             MainFrame.Visible = true
-            fluidTween(OpenBtn, 0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, {Position = UDim2.new(0.5, -60, 0, -40)})
+            fluidTween(OpenBtn, 0.4, Enum.EasingStyle.Quint, Enum.EasingDirection.Out, {Position = UDim2.new(0.5, -65, 0, -40)})
             fluidTween(MainFrame, 0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out, {Size = UDim2.new(0, 520, 0, 360), Position = UDim2.new(0.5, -260, 0.5, -180), BackgroundTransparency = 0})
         else
-            -- Zoom interface cleanly up into the top screen coordinate
             fluidTween(MainFrame, 0.5, Enum.EasingStyle.Back, Enum.EasingDirection.In, {Size = UDim2.new(0, 0, 0, 0), Position = UDim2.new(0.5, 0, 0, 15), BackgroundTransparency = 1})
             task.wait(0.3)
             MainFrame.Visible = false
-            fluidTween(OpenBtn, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out, {Position = UDim2.new(0.5, -60, 0, 15)})
+            fluidTween(OpenBtn, 0.4, Enum.EasingStyle.Back, Enum.EasingDirection.Out, {Position = UDim2.new(0.5, -65, 0, 15)})
         end
     end
 
     OpenBtn.MouseButton1Click:Connect(toggleUI)
 
-    -- Dynamic Keybind Listener for Universal Minimizing Hook
     UserInputService.InputBegan:Connect(function(input, gpe)
         if gpe then return end
         if not bindingMinimize and input.KeyCode == minimizeKey then
@@ -149,7 +164,7 @@ function Xen0UI:CreateWindow(Config)
     Title.Position = UDim2.new(0, 15, 0, 0)
     Title.BackgroundTransparency = 1
     Title.Text = WindowName
-    Title.TextColor3 = Color3.fromRGB(0, 0, 0)
+    Title.TextColor3 = Theme.TextPrimary
     Title.Font = Enum.Font.SourceSansBold
     Title.TextSize = 18
     Title.TextXAlignment = Enum.TextXAlignment.Left
@@ -157,7 +172,7 @@ function Xen0UI:CreateWindow(Config)
     local BorderLine = Instance.new("Frame", MainFrame)
     BorderLine.Size = UDim2.new(1, 0, 0, 1)
     BorderLine.Position = UDim2.new(0, 0, 0, 45)
-    BorderLine.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
+    BorderLine.BackgroundColor3 = Theme.Line
     BorderLine.BorderSizePixel = 0
 
     local Sidebar = Instance.new("ScrollingFrame", MainFrame)
@@ -181,7 +196,7 @@ function Xen0UI:CreateWindow(Config)
     local SideDivider = Instance.new("Frame", MainFrame)
     SideDivider.Size = UDim2.new(0, 1, 1, -46)
     SideDivider.Position = UDim2.new(0, 140, 0, 46)
-    SideDivider.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
+    SideDivider.BackgroundColor3 = Theme.Line
     SideDivider.BorderSizePixel = 0
 
     local WindowAPI = {}
@@ -193,7 +208,7 @@ function Xen0UI:CreateWindow(Config)
         TabPage.BackgroundTransparency = 1
         TabPage.BorderSizePixel = 0
         TabPage.ScrollBarThickness = 2
-        TabPage.ScrollBarImageColor3 = Color3.fromRGB(210, 210, 210)
+        TabPage.ScrollBarImageColor3 = Theme.Border
         TabPage.Visible = firstTab
 
         local PageLayout = Instance.new("UIListLayout", TabPage)
@@ -202,22 +217,7 @@ function Xen0UI:CreateWindow(Config)
 
         local TabButton = Instance.new("TextButton", Sidebar)
         TabButton.Size = UDim2.new(0, 120, 0, 34)
-        TabButton.BackgroundColor3 = firstTab and Color3.fromRGB(242, 242, 242) or Color3.fromRGB(255, 255, 255)
+        TabButton.BackgroundColor3 = firstTab and Theme.TabActive or Theme.TabInactive
         TabButton.Text = tabName
-        TabButton.TextColor3 = firstTab and Color3.fromRGB(0, 0, 0) or Color3.fromRGB(140, 140, 140)
+        TabButton.TextColor3 = firstTab and Theme.TextPrimary or Theme.TextSecondary
         TabButton.Font = Enum.Font.SourceSansSemibold
-        TabButton.TextSize = 14
-        TabButton.BorderSizePixel = 0
-
-        Instance.new("UICorner", TabButton).CornerRadius = UDim.new(0, 6)
-
-        if firstTab then firstTab = false end
-
-        TabButton.MouseButton1Click:Connect(function()
-            for _, page in pairs(ContentDisplay:GetChildren()) do page.Visible = false end
-            for _, btn in pairs(Sidebar:GetChildren()) do
-                if btn:IsA("TextButton") then
-                    fluidTween(btn, 0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out, {BackgroundColor3 = Color3.fromRGB(255, 255, 255), TextColor3 = Color3.fromRGB(140, 140, 140)})
-                end
-            end
-            TabPage.Visible = true
